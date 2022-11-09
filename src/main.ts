@@ -8,6 +8,8 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true
   }));
+  console.log('ENVIRONMENT');
+  console.log(JSON.stringify(process.env));
   await app.listen(parseInt(process.env.PORT) || 3000);
 }
 bootstrap();
