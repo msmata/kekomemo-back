@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
 import { Food } from './entities/food.entity';
@@ -7,22 +8,29 @@ import { Food } from './entities/food.entity';
 @Injectable()
 export class FoodService {
 
-  private foods: Food[] = [
-    {id: "1", name: 'Guiso de lentejas', image: ''},
-    {id: "2", name: 'Milanesas', image: ''},
-    {id: "3", name: 'Pizza', image: ''},
-  ];
+  constructor(
+    @InjectModel(Food.name)
+    private readonly foodModel: Model<Food>
+  ){}
 
-  create(createFoodDto: CreateFoodDto) {
-    this.foods.push({...createFoodDto, id: randomUUID()});
+  async create(createFoodDto: CreateFoodDto) {
+    try {
+      await this.foodModel.create({...createFoodDto});
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new BadRequestException(`Food with name ${createFoodDto.name} already exists`);
+      }
+
+      throw new InternalServerErrorException(`Check Logs`);
+    }
   }
 
-  findAll() {
-    return this.foods;
+  async findAll() {
+    return await this.foodModel.find({});
   }
 
-  findOne(id: string) {
-    const searchedFood = this.foods.find(food => food.id === id);
+  async findOne(id: string) {
+    const searchedFood = await this.foodModel.findById(id);
 
     if (!searchedFood) {
       throw new NotFoundException(`Food with id ${id} not found`);
@@ -31,18 +39,11 @@ export class FoodService {
     return searchedFood;
   }
 
-  update(id: string, updateFoodDto: UpdateFoodDto) {
-    const food = this.findOne(id);
-
-    food.name = updateFoodDto.name;
-    food.image = updateFoodDto.image;
-
-    return food;
+  async update(id: string, updateFoodDto: UpdateFoodDto) {
+    await this.foodModel.findOneAndUpdate({_id: id}, {...updateFoodDto});
   }
 
-  remove(id: string) {
-    this.findOne(id);
-
-    this.foods = this.foods.filter(f => f.id !== id);
+  async remove(id: string) {
+    await this.foodModel.findOneAndDelete({_id: id});
   }
 }
