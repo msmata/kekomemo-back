@@ -15,7 +15,7 @@
 $ yarn
 ```
 
-Create .env file and add DB_URL property, with mongo database url in it.
+Create .env file and add __DB_URL__ property, with mongo database url in it. Also add __PORT__ variable (app port, not database port)
 
 ## Running the app
 
