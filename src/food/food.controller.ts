@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { FoodService } from './food.service';
 import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
+import { ValidateMongoId } from 'src/common/pipes/ValidateMongoId';
 
 @Controller('food')
 export class FoodController {
@@ -18,17 +19,17 @@ export class FoodController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ValidateMongoId) id: string) {
     return this.foodService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFoodDto: UpdateFoodDto) {
+  update(@Param('id', ValidateMongoId) id: string, @Body() updateFoodDto: UpdateFoodDto) {
     return this.foodService.update(id, updateFoodDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ValidateMongoId) id: string) {
     return this.foodService.remove(id);
   }
 }

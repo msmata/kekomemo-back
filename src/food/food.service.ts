@@ -44,6 +44,10 @@ export class FoodService {
   }
 
   async remove(id: string) {
-    await this.foodModel.findOneAndDelete({_id: id});
+    try {
+      await this.foodModel.findOneAndDelete({_id: id});
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
