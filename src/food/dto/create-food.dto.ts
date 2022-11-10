@@ -7,4 +7,7 @@ export class CreateFoodDto {
     @IsString()
     @IsOptional()
     image?: string;
+    @IsString()
+    @IsOptional()
+    description?: string;
 }

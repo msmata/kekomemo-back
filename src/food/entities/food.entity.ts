@@ -10,6 +10,8 @@ export class Food extends Document {
     name: string;
     @Prop()
     image: string;
+    @Prop()
+    description: string;
 }
 
 export const FoodSchema = SchemaFactory.createForClass(Food);
