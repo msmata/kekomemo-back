@@ -18,18 +18,19 @@ export class FoodController {
     return this.foodService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ValidateMongoId) id: string) {
+  @Get('/:id')
+  findOne(@Param('id') id: string) {
+    console.log('id => ', id);
     return this.foodService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id', ValidateMongoId) id: string, @Body() updateFoodDto: UpdateFoodDto) {
+  @Patch('/:id')
+  update(@Param('id') id: string, @Body() updateFoodDto: UpdateFoodDto) {
     return this.foodService.update(id, updateFoodDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id', ValidateMongoId) id: string) {
+  @Delete('/:id')
+  remove(@Param('id') id: string) {
     return this.foodService.remove(id);
   }
 }
